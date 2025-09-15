@@ -157,6 +157,50 @@ ORDER BY start_year;
 | 2022       | 74334           |
 | 2023       | 74601           |
 
+### 8. Identify Departments with Above-Average Salaries (Using CTE)
+This query uses a CTE (Common Table Expression) to first calculate the average salary across all departments, then compares each department’s average salary against the overall average. This helps quickly identify which departments are paying above market average.
+```sql
+WITH overall_avg AS (
+    SELECT ROUND(AVG(sal.salary), 0) AS avg_salary
+    FROM salaries AS sal
+)
+SELECT dep.name, ROUND(AVG(sal.salary), 0) AS dept_avg_salary
+FROM departments AS dep
+INNER JOIN employees AS emp ON emp.department_id = dep.id
+INNER JOIN salaries AS sal ON sal.employee_id = emp.id
+GROUP BY dep.name
+HAVING ROUND(AVG(sal.salary), 0) > (SELECT avg_salary FROM overall_avg)
+ORDER BY dept_avg_salary DESC;
+```
+| Department               | Dept Avg Salary (Rs) |
+| ------------------------ | -------------------- |
+| Marketing                | 76494                |
+| Research and Development | 76457                |
+| Sales                    | 76171                |
+| IT                       | 76090                |
+
+### 9. Rank Employees by Salary Within Their Department (Using Window Function)
+This query uses the RANK() window function to assign a rank to employees based on their salary within each department. This is useful to identify the top performers or highest earners per department.
+```sql
+SELECT 
+    dep.name AS department,
+    emp.first_name,
+    emp.last_name,
+    sal.salary,
+    RANK() OVER (PARTITION BY dep.name ORDER BY sal.salary DESC) AS salary_rank
+FROM employees AS emp
+INNER JOIN salaries AS sal ON emp.id = sal.employee_id
+INNER JOIN departments AS dep ON emp.department_id = dep.id
+ORDER BY dep.name, salary_rank;
+```
+| Department | First Name | Last Name | Salary (Rs) | Salary Rank |
+| ---------- | ---------- | --------- | ----------- | ----------- |
+| IT         | John       | Miller    | 99985       | 1           |
+| IT         | Emily      | Brown     | 99802       | 2           |
+| IT         | Robert     | Lee       | 99809       | 3           |
+| Sales      | Jane       | Lee       | 99968       | 1           |
+| Sales      | Daniel     | Johnson   | 99854       | 2           |
+
 ## Tools Used
 - **PostgreSQL:** Utilized for executing the SQL queries and managing the database.
 - **SQL:** The primary language for querying the data and extracting insights.
