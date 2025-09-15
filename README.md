@@ -9,10 +9,16 @@ The goal of this project is to leverage SQL queries to gain a better understandi
 ### 1. Top 10 Employees with the Highest Salaries
 To find the top earners within the company, I queried the data to list the top 10 employees based on their salaries.
 ```sql
-SELECT emp.id, emp.first_name, emp.last_name, sal.salary
-FROM employees AS emp
+SELECT
+    emp.id,
+    emp.first_name,
+    emp.last_name,
+    sal.salary
+FROM
+    employees AS emp
 INNER JOIN salaries AS sal ON emp.id = sal.employee_id
-ORDER BY sal.salary DESC
+ORDER BY
+    sal.salary DESC
 LIMIT 10;
 ```
 | ID   | First Name   | Last Name  | Salary (Rs) |
