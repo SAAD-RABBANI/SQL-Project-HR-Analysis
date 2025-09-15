@@ -37,8 +37,11 @@ LIMIT 10;
 ### 2. Employee Distribution by Department
 To understand how employees are distributed across different departments, I calculated the employee count for each department.
 ```sql
-SELECT dep.name, COUNT(emp.id) AS employees_count
-FROM departments AS dep
+SELECT
+    dep.name,
+    COUNT(emp.id) AS employees_count
+FROM
+    departments AS dep
 INNER JOIN employees AS emp ON dep.id = emp.department_id
 GROUP BY dep.name
 ORDER BY COUNT(emp.id) DESC;
@@ -59,8 +62,11 @@ ORDER BY COUNT(emp.id) DESC;
 ### 3. Average Salary by Department
 This query calculates the average salary for each department to identify departments with higher average compensation.
 ```sql
-SELECT dep.name, ROUND(AVG(sal.salary), 0) AS avg_salary
-FROM departments AS dep
+SELECT
+    dep.name,
+    ROUND(AVG(sal.salary), 0) AS avg_salary
+FROM
+    departments AS dep
 INNER JOIN employees AS emp ON emp.department_id = dep.id
 INNER JOIN salaries AS sal ON sal.employee_id = emp.id
 GROUP BY dep.name
@@ -82,8 +88,13 @@ ORDER BY AVG(sal.salary) DESC;
 ### 4. Employees with Multiple Salaries
 To identify employees who have been assigned multiple salaries, I used this query.
 ```sql
-SELECT emp.id, emp.first_name, emp.last_name, sal.salary
-FROM employees AS emp
+SELECT
+    emp.id,
+    emp.first_name,
+    emp.last_name,
+    sal.salary
+FROM
+    employees AS emp
 INNER JOIN salaries AS sal ON emp.id = sal.employee_id
 WHERE emp.id IN (
     SELECT employee_id
@@ -104,8 +115,11 @@ WHERE emp.id IN (
 ### 5. Employee Count by Job Title
 This query provides the count of employees for each job title to understand job distribution within the company.
 ```sql
-SELECT ti.name, COUNT(emp.id) AS employee_by_dep
-FROM titles AS ti
+SELECT
+    ti.name,
+    COUNT(emp.id) AS employee_by_dep
+FROM
+    titles AS ti
 INNER JOIN employees AS emp ON ti.id = emp.title_id
 GROUP BY ti.name
 ORDER BY COUNT(emp.id) DESC;
@@ -170,8 +184,11 @@ WITH overall_avg AS (
     SELECT ROUND(AVG(sal.salary), 0) AS avg_salary
     FROM salaries AS sal
 )
-SELECT dep.name, ROUND(AVG(sal.salary), 0) AS dept_avg_salary
-FROM departments AS dep
+SELECT
+    dep.name,
+    ROUND(AVG(sal.salary), 0) AS dept_avg_salary
+FROM
+    departments AS dep
 INNER JOIN employees AS emp ON emp.department_id = dep.id
 INNER JOIN salaries AS sal ON sal.employee_id = emp.id
 GROUP BY dep.name
@@ -194,7 +211,8 @@ SELECT
     emp.last_name,
     sal.salary,
     RANK() OVER (PARTITION BY dep.name ORDER BY sal.salary DESC) AS salary_rank
-FROM employees AS emp
+FROM
+    employees AS emp
 INNER JOIN salaries AS sal ON emp.id = sal.employee_id
 INNER JOIN departments AS dep ON emp.department_id = dep.id
 ORDER BY dep.name, salary_rank;
