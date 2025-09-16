@@ -163,8 +163,11 @@ ORDER BY AVG(sal.salary) DESC;
 ### 7. Salary Trends Over Time
 To analyze how salaries have changed over time, I examined the average salary for each year.
 ```sql
-SELECT EXTRACT(YEAR FROM start_date) AS start_year, ROUND(AVG(salary), 0) AS avg_salary
-FROM salaries
+SELECT
+    EXTRACT(YEAR FROM start_date) AS start_year,
+    ROUND(AVG(salary), 0) AS avg_salary
+FROM
+    salaries
 GROUP BY start_year
 ORDER BY start_year;
 ```
